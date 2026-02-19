@@ -8,22 +8,22 @@ import authRoutes from './routes/auth';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
+// Middleware 
 app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true,
 }));
 app.use(express.json());
 
-// Routes
+// Rute
 app.use('/api/auth', authRoutes);
 
-// Health check
+// Pemeriksaan kesehatan server
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
 });
 
-// Start server
+// Menjalankan server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

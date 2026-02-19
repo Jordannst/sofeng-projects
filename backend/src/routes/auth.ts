@@ -8,10 +8,10 @@ import { registerValidation, loginValidation } from '../validators/auth';
 
 const router = Router();
 
-// POST /api/auth/register
+// POST /api/auth/register — Mendaftarkan pengguna baru
 router.post('/register', registerValidation, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    // Check validation errors
+    // Memeriksa kesalahan validasi
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).json({ errors: errors.array() });
@@ -29,7 +29,7 @@ router.post('/register', registerValidation, async (req: AuthRequest, res: Respo
       address,
     } = req.body;
 
-    // Check if email already exists
+    // Memeriksa apakah email sudah terdaftar
     const { data: existingEmail } = await supabase
       .from('users')
       .select('id')
@@ -41,7 +41,7 @@ router.post('/register', registerValidation, async (req: AuthRequest, res: Respo
       return;
     }
 
-    // Check if username already exists
+    // Memeriksa apakah username sudah digunakan
     const { data: existingUsername } = await supabase
       .from('users')
       .select('id')
@@ -53,11 +53,11 @@ router.post('/register', registerValidation, async (req: AuthRequest, res: Respo
       return;
     }
 
-    // Hash password
+    // Mengenkripsi password
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Insert user into database
+    // Menyimpan pengguna ke database
     const { data: newUser, error } = await supabase
       .from('users')
       .insert({
@@ -80,7 +80,7 @@ router.post('/register', registerValidation, async (req: AuthRequest, res: Respo
       return;
     }
 
-    // Generate JWT
+    // Membuat token JWT
     const token = jwt.sign(
       { id: newUser.id, email: newUser.email, role: newUser.role },
       process.env.JWT_SECRET as string,
@@ -98,10 +98,10 @@ router.post('/register', registerValidation, async (req: AuthRequest, res: Respo
   }
 });
 
-// POST /api/auth/login
+// POST /api/auth/login — Masuk ke akun pengguna
 router.post('/login', loginValidation, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    // Check validation errors
+    // Memeriksa kesalahan validasi
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).json({ errors: errors.array() });
@@ -110,7 +110,7 @@ router.post('/login', loginValidation, async (req: AuthRequest, res: Response): 
 
     const { email, password } = req.body;
 
-    // Find user by email
+    // Mencari pengguna berdasarkan email
     const { data: user, error } = await supabase
       .from('users')
       .select('*')
@@ -122,21 +122,21 @@ router.post('/login', loginValidation, async (req: AuthRequest, res: Response): 
       return;
     }
 
-    // Compare password
+    // Mencocokkan password
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
       res.status(401).json({ error: 'Invalid email or password' });
       return;
     }
 
-    // Generate JWT
+    // Membuat token JWT
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET as string,
       { expiresIn: '24h' }
     );
 
-    // Remove password from response
+    // Menghapus password dari respons
     const { password: _, ...userWithoutPassword } = user;
 
     res.json({
@@ -150,7 +150,7 @@ router.post('/login', loginValidation, async (req: AuthRequest, res: Response): 
   }
 });
 
-// GET /api/auth/me — Get current user profile
+// GET /api/auth/me — Mengambil profil pengguna saat ini
 router.get('/me', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { data: user, error } = await supabase
