@@ -1,7 +1,6 @@
 -- =============================================
--- Users Table Migration for Supabase PostgreSQL
+-- Migrasi Tabel Users untuk Supabase PostgreSQL
 -- =============================================
--- Run this SQL in Supabase SQL Editor (Dashboard > SQL Editor)
 
 CREATE TABLE IF NOT EXISTS users (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -19,11 +18,11 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Index for faster lookups
+-- Indeks untuk pencarian yang lebih cepat
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 
--- Auto-update updated_at timestamp
+-- Otomatis memperbarui timestamp updated_at
 CREATE OR REPLACE FUNCTION update_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN

@@ -11,7 +11,7 @@ export interface AuthRequest extends Request {
 
 const authenticateToken = (req: AuthRequest, res: Response, next: NextFunction): void => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+  const token = authHeader && authHeader.split(' ')[1]; // Mengambil TOKEN dari Bearer
 
   if (!token) {
     res.status(401).json({ error: 'Access token required' });
