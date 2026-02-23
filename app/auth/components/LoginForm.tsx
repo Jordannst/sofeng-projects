@@ -94,7 +94,7 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
               onChange={(e) => setIdentifier(e.target.value)}
               placeholder="nama@email.com atau username"
               required
-              className="w-full pl-11 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
+              className="w-full pl-11 pr-4 py-2.5 text-sm text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
             />
           </div>
         </div>
@@ -134,7 +134,7 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="w-full pl-11 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
+              className="w-full pl-11 pr-4 py-2.5 text-sm text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
             />
           </div>
         </div>

@@ -15,6 +15,10 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [gender, setGender] = useState("");
+  const [address, setAddress] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -41,6 +45,10 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         password,
         full_name: fullName,
         username,
+        ...(phoneNumber && { phone_number: phoneNumber }),
+        ...(dateOfBirth && { date_of_birth: dateOfBirth }),
+        ...(gender && { gender }),
+        ...(address && { address }),
       });
       router.push("/dashboard");
     } catch (err) {
@@ -114,7 +122,7 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
               onChange={(e) => setFullName(e.target.value)}
               placeholder="John Doe"
               required
-              className="w-full pl-11 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
+              className="w-full pl-11 pr-4 py-2.5 text-sm text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
             />
           </div>
         </div>
@@ -146,7 +154,7 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="johndoe123"
               required
-              className="w-full pl-11 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
+              className="w-full pl-11 pr-4 py-2.5 text-sm text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
             />
           </div>
         </div>
@@ -178,7 +186,7 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="nama@email.com"
               required
-              className="w-full pl-11 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
+              className="w-full pl-11 pr-4 py-2.5 text-sm text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
             />
           </div>
         </div>
@@ -211,7 +219,7 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
               placeholder="Min. 8 karakter"
               required
               minLength={8}
-              className="w-full pl-11 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
+              className="w-full pl-11 pr-4 py-2.5 text-sm text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
             />
           </div>
         </div>
@@ -243,7 +251,140 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Ulangi password"
               required
-              className="w-full pl-11 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
+              className="w-full pl-11 pr-4 py-2.5 text-sm text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
+            />
+          </div>
+        </div>
+
+        {/* Nomor Telepon (Opsional) */}
+        <div>
+          <label className="block text-sm font-medium text-navy-900 mb-1.5">
+            Nomor Telepon <span className="text-slate-400 font-normal">(opsional)</span>
+          </label>
+          <div className="relative">
+            <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg
+                className="w-[18px] h-[18px]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.8}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"
+                />
+              </svg>
+            </span>
+            <input
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder="081234567890"
+              className="w-full pl-11 pr-4 py-2.5 text-sm text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
+            />
+          </div>
+        </div>
+
+        {/* Tanggal Lahir & Gender (Opsional) */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-navy-900 mb-1.5">
+              Tanggal Lahir <span className="text-slate-400 font-normal">(opsional)</span>
+            </label>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <svg
+                  className="w-[18px] h-[18px]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.8}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"
+                  />
+                </svg>
+              </span>
+              <input
+                type="date"
+                value={dateOfBirth}
+                onChange={(e) => setDateOfBirth(e.target.value)}
+                className="w-full pl-11 pr-4 py-2.5 text-sm text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-navy-900 mb-1.5">
+              Gender <span className="text-slate-400 font-normal">(opsional)</span>
+            </label>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <svg
+                  className="w-[18px] h-[18px]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.8}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
+                  />
+                </svg>
+              </span>
+              <select
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="w-full pl-11 pr-4 py-2.5 text-sm text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition appearance-none bg-white cursor-pointer"
+              >
+                <option value="">Pilih</option>
+                <option value="male">Laki-laki</option>
+                <option value="female">Perempuan</option>
+                <option value="other">Lainnya</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Alamat (Opsional) */}
+        <div>
+          <label className="block text-sm font-medium text-navy-900 mb-1.5">
+            Alamat <span className="text-slate-400 font-normal">(opsional)</span>
+          </label>
+          <div className="relative">
+            <span className="absolute top-3 left-0 pl-3.5 flex items-start pointer-events-none text-slate-400">
+              <svg
+                className="w-[18px] h-[18px]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.8}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                />
+              </svg>
+            </span>
+            <textarea
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Alamat tempat tinggal"
+              maxLength={255}
+              rows={2}
+              className="w-full pl-11 pr-4 py-2.5 text-sm text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400 resize-none"
             />
           </div>
         </div>
