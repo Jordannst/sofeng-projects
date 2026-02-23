@@ -1,10 +1,35 @@
 "use client";
 
+import { useState, FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { login } from "@/app/lib/api";
+
 interface LoginFormProps {
   onSwitchToRegister: () => void;
 }
 
 export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      await login({ email, password });
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Login gagal");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="w-full max-w-md">
       {/* Mobile logo */}
@@ -34,7 +59,14 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
         Selamat datang kembali! Silakan masukkan data Anda.
       </p>
 
-      <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+      {/* Error Message */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+          {error}
+        </div>
+      )}
+
+      <form className="space-y-5" onSubmit={handleSubmit}>
         {/* Email */}
         <div>
           <label className="block text-sm font-medium text-navy-900 mb-1.5">
@@ -58,7 +90,10 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
             </span>
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="nama@email.com"
+              required
               className="w-full pl-11 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
             />
           </div>
@@ -95,7 +130,10 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
             </span>
             <input
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
+              required
               className="w-full pl-11 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
             />
           </div>
@@ -119,9 +157,10 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
         {/* Submit */}
         <button
           type="submit"
-          className="w-full py-2.5 bg-accent-500 hover:bg-accent-600 active:bg-accent-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:ring-offset-2 cursor-pointer"
+          disabled={loading}
+          className="w-full py-2.5 bg-accent-500 hover:bg-accent-600 active:bg-accent-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:ring-offset-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Masuk
+          {loading ? "Memproses..." : "Masuk"}
         </button>
 
         {/* Divider */}

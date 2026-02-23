@@ -1,10 +1,55 @@
 "use client";
 
+import { useState, FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { register } from "@/app/lib/api";
+
 interface RegisterFormProps {
   onSwitchToLogin: () => void;
 }
 
 export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
+  const router = useRouter();
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (password !== confirmPassword) {
+      setError("Password dan konfirmasi password tidak cocok");
+      return;
+    }
+
+    if (!agreeTerms) {
+      setError("Anda harus menyetujui Syarat & Ketentuan");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await register({
+        email,
+        password,
+        full_name: fullName,
+        username,
+      });
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Registrasi gagal");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="w-full max-w-md">
       {/* Mobile logo */}
@@ -34,7 +79,14 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         Mulai perjalanan Anda. Gratis, tanpa kartu kredit.
       </p>
 
-      <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+      {/* Error Message */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+          {error}
+        </div>
+      )}
+
+      <form className="space-y-5" onSubmit={handleSubmit}>
         {/* Nama Lengkap */}
         <div>
           <label className="block text-sm font-medium text-navy-900 mb-1.5">
@@ -58,7 +110,42 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             </span>
             <input
               type="text"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
               placeholder="John Doe"
+              required
+              className="w-full pl-11 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
+            />
+          </div>
+        </div>
+
+        {/* Username */}
+        <div>
+          <label className="block text-sm font-medium text-navy-900 mb-1.5">
+            Username
+          </label>
+          <div className="relative">
+            <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg
+                className="w-[18px] h-[18px]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.8}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </span>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="johndoe123"
+              required
               className="w-full pl-11 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
             />
           </div>
@@ -87,7 +174,10 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             </span>
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="nama@email.com"
+              required
               className="w-full pl-11 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
             />
           </div>
@@ -116,7 +206,11 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             </span>
             <input
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Min. 8 karakter"
+              required
+              minLength={8}
               className="w-full pl-11 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
             />
           </div>
@@ -145,7 +239,10 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             </span>
             <input
               type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Ulangi password"
+              required
               className="w-full pl-11 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
             />
           </div>
@@ -156,6 +253,8 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
           <input
             id="terms"
             type="checkbox"
+            checked={agreeTerms}
+            onChange={(e) => setAgreeTerms(e.target.checked)}
             className="w-4 h-4 mt-0.5 rounded border-slate-300 text-accent-500 focus:ring-accent-500/30 cursor-pointer accent-accent-500"
           />
           <label
@@ -182,9 +281,10 @@ export default function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         {/* Submit */}
         <button
           type="submit"
-          className="w-full py-2.5 bg-accent-500 hover:bg-accent-600 active:bg-accent-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:ring-offset-2 cursor-pointer"
+          disabled={loading}
+          className="w-full py-2.5 bg-accent-500 hover:bg-accent-600 active:bg-accent-700 text-white text-sm font-semibold rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:ring-offset-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Buat Akun
+          {loading ? "Memproses..." : "Buat Akun"}
         </button>
 
         {/* Divider */}
