@@ -10,7 +10,7 @@ interface LoginFormProps {
 
 export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,7 +21,7 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
     setLoading(true);
 
     try {
-      await login({ email, password });
+      await login({ identifier, password });
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login gagal");
@@ -67,10 +67,10 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
       )}
 
       <form className="space-y-5" onSubmit={handleSubmit}>
-        {/* Email */}
+        {/* Email atau Username */}
         <div>
           <label className="block text-sm font-medium text-navy-900 mb-1.5">
-            Email
+            Email atau Username
           </label>
           <div className="relative">
             <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -84,15 +84,15 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25H4.5a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5H4.5a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.078 1.921l-7.5 4.615a2.25 2.25 0 01-2.344 0l-7.5-4.615A2.25 2.25 0 012.25 6.993V6.75"
+                  d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
             </span>
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="nama@email.com"
+              type="text"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
+              placeholder="nama@email.com atau username"
               required
               className="w-full pl-11 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition placeholder:text-slate-400"
             />

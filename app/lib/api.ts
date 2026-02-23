@@ -42,7 +42,7 @@ export interface RegisterData {
 }
 
 export interface LoginData {
-  email: string;
+  identifier: string;
   password: string;
 }
 
@@ -103,7 +103,7 @@ export async function register(data: RegisterData): Promise<AuthResponse> {
   return result;
 }
 
-/** Login pengguna */
+/** Login pengguna dengan email atau username */
 export async function login(data: LoginData): Promise<AuthResponse> {
   const response = await fetch(`${API_URL}/auth/login`, {
     method: 'POST',
