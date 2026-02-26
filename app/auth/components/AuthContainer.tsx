@@ -34,9 +34,9 @@ export default function AuthContainer() {
         className={`
           form-panel
           absolute top-0 left-0 w-1/2 h-full
-          flex items-center justify-center p-10 bg-white overflow-y-auto
+          flex items-start justify-center pt-10 pb-10 px-10 bg-white overflow-y-auto
           transition-all duration-700 ease-[cubic-bezier(0.77,0,0.18,1)]
-          max-lg:relative max-lg:w-full max-lg:min-h-screen
+          max-lg:relative max-lg:w-full max-lg:min-h-screen max-lg:h-auto
           ${
             isRegisterActive
               ? "opacity-100 translate-x-0 max-lg:flex"

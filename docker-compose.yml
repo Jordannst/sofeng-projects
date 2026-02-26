@@ -1,0 +1,53 @@
+# =============================================
+# Docker Compose — Full-Stack Monorepo
+# =============================================
+#
+# DEV  (hot-reload) : docker compose up
+# PROD (optimized)  : docker compose up --build -e NODE_ENV=production
+# Stop              : docker compose down
+#
+# Default = Development mode.
+# =============================================
+
+services:
+  frontend:
+    image: node:20-alpine
+    container_name: sofeng-frontend
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "${PORT_FRONTEND:-3000}:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:5000/api}
+    depends_on:
+      - backend
+    networks:
+      - sofeng-network
+
+  backend:
+    image: node:20-alpine
+    container_name: sofeng-backend
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "${PORT_BACKEND:-5000}:5000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    env_file:
+      - ./backend/.env
+    environment:
+      - NODE_ENV=development
+      - PORT=${PORT_BACKEND:-5000}
+      - CORS_ORIGIN=${FRONTEND_URL:-http://localhost:3000}
+    networks:
+      - sofeng-network
+
+networks:
+  sofeng-network:
+    driver: bridge
