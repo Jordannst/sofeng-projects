@@ -1,46 +1,114 @@
 # User Metadata
 
-Dokumentasi lengkap tentang struktur data pengguna yang digunakan dalam sistem.
+> Dokumentasi lengkap tentang struktur data pengguna yang digunakan dalam sistem.
 
-## Struktur Tabel `users`
+---
 
-| Kolom | Tipe Data | Wajib | Default | Keterangan |
-|---|---|---|---|---|
-| `id` | UUID | ✅ | `gen_random_uuid()` | ID unik pengguna, dibuat otomatis |
-| `email` | VARCHAR(255) | ✅ | — | Alamat email, harus unik |
-| `password` | VARCHAR(255) | ✅ | — | Password yang sudah di-hash (bcrypt) |
-| `full_name` | VARCHAR(100) | ✅ | — | Nama lengkap pengguna |
-| `username` | VARCHAR(30) | ✅ | — | Username unik (huruf, angka, underscore) |
-| `phone_number` | VARCHAR(20) | ❌ | `null` | Nomor telepon |
-| `date_of_birth` | DATE | ❌ | `null` | Tanggal lahir (format: YYYY-MM-DD) |
-| `gender` | VARCHAR(10) | ❌ | `null` | Jenis kelamin: `male`, `female`, atau `other` |
-| `address` | VARCHAR(255) | ❌ | `null` | Alamat tempat tinggal |
-| `profile_picture_url` | TEXT | ❌ | `null` | URL foto profil |
-| `role` | VARCHAR(20) | ✅ | `'user'` | Peran pengguna: `user` atau `admin` |
-| `created_at` | TIMESTAMPTZ | ✅ | `NOW()` | Waktu pendaftaran (otomatis) |
-| `updated_at` | TIMESTAMPTZ | ✅ | `NOW()` | Waktu terakhir diperbarui (otomatis via trigger) |
+## Daftar Isi
 
-## Field yang Dikirim Saat Register
+- [Struktur Tabel Database](#struktur-tabel-database)
+- [API Endpoints](#api-endpoints)
+  - [Register](#1-register)
+  - [Login](#2-login)
+  - [Get Profile](#3-get-profile)
+- [Contoh Response](#contoh-response)
+- [Keamanan](#keamanan)
 
-| Field | Wajib | Validasi |
-|---|---|---|
-| `email` | ✅ | Harus format email valid |
-| `password` | ✅ | Min. 8 karakter, mengandung huruf besar, huruf kecil, dan angka |
-| `full_name` | ✅ | 2–100 karakter |
-| `username` | ✅ | 3–30 karakter, hanya huruf, angka, dan underscore |
-| `phone_number` | ❌ | Format nomor telepon valid |
-| `date_of_birth` | ❌ | Format ISO 8601 (YYYY-MM-DD) |
-| `gender` | ❌ | Salah satu dari: `male`, `female`, `other` |
-| `address` | ❌ | Maksimal 255 karakter |
+---
 
-## Field yang Dikirim Saat Login
+## Struktur Tabel Database
 
-| Field | Wajib | Keterangan |
-|---|---|---|
-| `identifier` | ✅ | Bisa diisi email atau username |
-| `password` | ✅ | Password akun |
+### Tabel `users`
 
-## Contoh Response API
+| Kolom                  | Tipe Data      | Wajib | Default              | Keterangan                                    |
+| ---------------------- | -------------- | :---: | -------------------- | --------------------------------------------- |
+| `id`                   | UUID           |  ✅   | `gen_random_uuid()`  | ID unik pengguna, dibuat otomatis             |
+| `email`                | VARCHAR(255)   |  ✅   | —                    | Alamat email, harus unik                      |
+| `password`             | VARCHAR(255)   |  ✅   | —                    | Password yang sudah di-hash (bcrypt)          |
+| `full_name`            | VARCHAR(100)   |  ✅   | —                    | Nama lengkap pengguna                         |
+| `username`             | VARCHAR(30)    |  ✅   | —                    | Username unik (huruf, angka, underscore)      |
+| `phone_number`         | VARCHAR(20)    |  ❌   | `null`               | Nomor telepon                                 |
+| `date_of_birth`        | DATE           |  ❌   | `null`               | Tanggal lahir (format: `YYYY-MM-DD`)          |
+| `gender`               | VARCHAR(10)    |  ❌   | `null`               | Jenis kelamin: `male`, `female`, atau `other` |
+| `address`              | VARCHAR(255)   |  ❌   | `null`               | Alamat tempat tinggal                         |
+| `profile_picture_url`  | TEXT           |  ❌   | `null`               | URL foto profil                               |
+| `role`                 | VARCHAR(20)    |  ✅   | `'user'`             | Peran pengguna: `user` atau `admin`           |
+| `created_at`           | TIMESTAMPTZ    |  ✅   | `NOW()`              | Waktu pendaftaran (otomatis)                  |
+| `updated_at`           | TIMESTAMPTZ    |  ✅   | `NOW()`              | Waktu terakhir diperbarui (via trigger)       |
+
+---
+
+## API Endpoints
+
+### 1. Register
+
+**Endpoint:** `POST /api/auth/register`
+
+#### Request Body
+
+| Field          | Tipe     | Wajib | Validasi                                                       |
+| -------------- | -------- | :---: | -------------------------------------------------------------- |
+| `email`        | `string` |  ✅   | Format email valid                                             |
+| `password`     | `string` |  ✅   | Min. 8 karakter, mengandung huruf besar, huruf kecil, dan angka |
+| `full_name`    | `string` |  ✅   | 2–100 karakter                                                 |
+| `username`     | `string` |  ✅   | 3–30 karakter, hanya huruf, angka, dan underscore              |
+| `phone_number` | `string` |  ❌   | Format nomor telepon valid                                     |
+| `date_of_birth`| `string` |  ❌   | Format ISO 8601 (`YYYY-MM-DD`)                                 |
+| `gender`       | `string` |  ❌   | Salah satu dari: `male`, `female`, `other`                     |
+| `address`      | `string` |  ❌   | Maksimal 255 karakter                                          |
+
+#### Contoh Request
+
+```json
+{
+  "email": "jordan@email.com",
+  "password": "Password123",
+  "full_name": "Jordan Sitorus",
+  "username": "jordannst",
+  "phone_number": "081234567890",
+  "date_of_birth": "2000-01-15",
+  "gender": "male",
+  "address": "Medan, Sumatera Utara"
+}
+```
+
+---
+
+### 2. Login
+
+**Endpoint:** `POST /api/auth/login`
+
+#### Request Body
+
+| Field        | Tipe     | Wajib | Keterangan                     |
+| ------------ | -------- | :---: | ------------------------------ |
+| `identifier` | `string` |  ✅   | Bisa diisi email atau username |
+| `password`   | `string` |  ✅   | Password akun                  |
+
+#### Contoh Request
+
+```json
+{
+  "identifier": "jordannst",
+  "password": "Password123"
+}
+```
+
+---
+
+### 3. Get Profile
+
+**Endpoint:** `GET /api/auth/me`
+
+#### Headers
+
+| Key             | Value              |
+| --------------- | ------------------ |
+| `Authorization` | `Bearer <token>`   |
+
+---
+
+## Contoh Response
 
 ### Register / Login Berhasil
 
@@ -65,7 +133,7 @@ Dokumentasi lengkap tentang struktur data pengguna yang digunakan dalam sistem.
 }
 ```
 
-### Get Profile (`GET /api/auth/me`)
+### Get Profile Berhasil
 
 ```json
 {
@@ -86,9 +154,30 @@ Dokumentasi lengkap tentang struktur data pengguna yang digunakan dalam sistem.
 }
 ```
 
-## Catatan Keamanan
+### Error Response
 
-- **Password** tidak pernah dikirim dalam response API — hanya disimpan dalam bentuk hash (bcrypt, 12 salt rounds)
-- **Token JWT** berlaku selama **24 jam**, berisi: `id`, `email`, `role`
-- Field `password` otomatis dihapus dari response di endpoint login
-- Endpoint `GET /api/auth/me` hanya bisa diakses dengan token valid di header `Authorization: Bearer <token>`
+```json
+{
+  "error": "Email atau username sudah terdaftar"
+}
+```
+
+```json
+{
+  "errors": [
+    { "msg": "Format email tidak valid", "path": "email" },
+    { "msg": "Password minimal 8 karakter", "path": "password" }
+  ]
+}
+```
+
+---
+
+## Keamanan
+
+| Aspek              | Detail                                                                 |
+| ------------------ | ---------------------------------------------------------------------- |
+| **Password Hash**  | Bcrypt dengan 12 salt rounds, tidak pernah dikirim dalam response      |
+| **Token JWT**      | Berlaku selama **24 jam**, berisi: `id`, `email`, `role`               |
+| **Authorization**  | Header `Authorization: Bearer <token>` diperlukan untuk endpoint `/me` |
+| **Validasi Input** | Semua input divalidasi di server menggunakan `express-validator`       |
