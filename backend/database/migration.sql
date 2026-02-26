@@ -33,6 +33,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Trigger: menjalankan fungsi update_updated_at setiap kali baris diperbarui
+DROP TRIGGER IF EXISTS trigger_users_updated_at ON users;
 CREATE TRIGGER trigger_users_updated_at
   BEFORE UPDATE ON users
   FOR EACH ROW
